@@ -19,7 +19,10 @@ import thuc.ute.service.impl.UserServiceImpl;
 import thuc.ute.utils.ValidationUtils;
 
 @MultipartConfig
-@WebServlet(urlPatterns = {"/profile"})
+@WebServlet(urlPatterns = {
+        "/profile",
+        "/admin/profile"
+})
 public class ProfileController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -72,6 +75,10 @@ public class ProfileController extends HttpServlet {
 
         // 4. Đưa thông tin User vào request để hiển thị
         req.setAttribute("user", currentUser);
+        req.setAttribute(
+                "profileAction",
+                getProfileAction(req)
+        );
 
         // 5. Forward đến trang profile.jsp
         req.getRequestDispatcher(
@@ -86,6 +93,8 @@ public class ProfileController extends HttpServlet {
             throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("text/html; charset=UTF-8");
 
         HttpSession session =
                 req.getSession(false);
@@ -122,12 +131,23 @@ public class ProfileController extends HttpServlet {
             return;
         }
 
+        req.setAttribute(
+                "profileAction",
+                getProfileAction(req)
+        );
+
         // 4. Lấy dữ liệu từ form
         String fullname =
                 req.getParameter("fullname");
 
         String phone =
                 req.getParameter("phone");
+
+        String oldAvatar =
+                user.getAvatar();
+
+        String newAvatar =
+                null;
 
         // 5. Validate fullname
         if (!ValidationUtils.isBlank(fullname)
@@ -146,6 +166,11 @@ public class ProfileController extends HttpServlet {
             return;
         }
 
+        String trimmedPhone =
+                phone == null
+                        ? ""
+                        : phone.trim();
+
         // 6. Validate phone
         if (!ValidationUtils.isValidPhone(phone)) {
 
@@ -162,13 +187,30 @@ public class ProfileController extends HttpServlet {
             return;
         }
 
+        if (!trimmedPhone.isEmpty()
+                && !trimmedPhone.equals(user.getPhone())
+                && userService.checkExistPhone(trimmedPhone)) {
+
+            req.setAttribute("error",
+                    "Số điện thoại đã được sử dụng bởi tài khoản khác"
+            );
+
+            req.setAttribute("user", user);
+
+            req.getRequestDispatcher(
+                    "/views/profile.jsp"
+            ).forward(req, resp);
+
+            return;
+        }
+
         // 7. Cập nhật fullname và phone
-        if (fullname != null && !fullname.trim().isEmpty()) {
+        if (fullname != null) {
             user.setFullname(fullname.trim());
         }
 
-        if (phone != null && !phone.trim().isEmpty()) {
-            user.setPhone(phone.trim());
+        if (!trimmedPhone.isEmpty()) {
+            user.setPhone(trimmedPhone);
         }
 
         // 8. Xử lý upload avatar
@@ -176,15 +218,6 @@ public class ProfileController extends HttpServlet {
 
             Part imagePart =
                     req.getPart("image");
-
-            System.out.println("=== DEBUG AVATAR UPLOAD ===");
-            System.out.println("imagePart: " + imagePart);
-            
-            if (imagePart != null) {
-                System.out.println("imagePart.getSize(): " + imagePart.getSize());
-                System.out.println("imagePart.getSubmittedFileName(): " + imagePart.getSubmittedFileName());
-                System.out.println("imagePart.getContentType(): " + imagePart.getContentType());
-            }
 
             // Validate image file type
             if (imagePart != null
@@ -226,25 +259,22 @@ public class ProfileController extends HttpServlet {
             if (imagePart != null
                     && imagePart.getSize() > 0) {
 
-                String newAvatar =
+                newAvatar =
                         saveAvatar(imagePart, req);
 
-                System.out.println("newAvatar saved: " + newAvatar);
-
                 if (newAvatar != null) {
-
-                    // Xóa avatar cũ nếu có
-                    deleteOldAvatar(
-                            user.getAvatar(),
-                            req
-                    );
-
                     user.setAvatar(newAvatar);
-                    System.out.println("user.getAvatar() after set: " + user.getAvatar());
                 }
             }
 
         } catch (Exception e) {
+
+            if (newAvatar != null) {
+                deleteOldAvatar(
+                        newAvatar,
+                        req
+                );
+            }
 
             e.printStackTrace();
 
@@ -266,13 +296,15 @@ public class ProfileController extends HttpServlet {
 
             userService.update(user);
 
-            System.out.println("After database update - user.getAvatar(): " + user.getAvatar());
+            if (newAvatar != null) {
+                deleteOldAvatar(
+                        oldAvatar,
+                        req
+                );
+            }
 
             // 8. Cập nhật Session
             session.setAttribute("account", user);
-
-            System.out.println("Session updated with new user data");
-            System.out.println("=== END DEBUG ===");
 
             // 9. Thông báo thành công
             req.setAttribute("success",
@@ -287,6 +319,13 @@ public class ProfileController extends HttpServlet {
 
         } catch (Exception e) {
 
+            if (newAvatar != null) {
+                deleteOldAvatar(
+                        newAvatar,
+                        req
+                );
+            }
+
             e.printStackTrace();
 
             req.setAttribute("error",
@@ -299,6 +338,13 @@ public class ProfileController extends HttpServlet {
                     "/views/profile.jsp"
             ).forward(req, resp);
         }
+    }
+
+    private String getProfileAction(
+            HttpServletRequest req) {
+
+        return req.getContextPath()
+                + req.getServletPath();
     }
 
     /**

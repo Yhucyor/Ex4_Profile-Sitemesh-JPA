@@ -4,6 +4,9 @@
 <c:set var="headerPath"
        value="${pageContext.request.requestURI}" />
 
+<c:set var="profileUrl"
+       value="${pageContext.request.contextPath}${not empty sessionScope.account and sessionScope.account.roleid == 1 ? '/admin/profile' : '/profile'}" />
+
 <%-- =========================================
      TOP BAR
      ========================================= --%>
@@ -33,14 +36,14 @@
 
                     <c:when test="${not empty sessionScope.account}">
 
-                        <a href="${pageContext.request.contextPath}/profile">
+                        <a href="${profileUrl}">
                             <i class="bi bi-person-fill"></i>
                             My Account
                         </a>
 
                         <span class="topbar-separator"></span>
 
-                        <a href="${pageContext.request.contextPath}/profile">
+                        <a href="${profileUrl}">
                             Profile
                         </a>
 
@@ -173,7 +176,7 @@
                         <li class="nav-item d-lg-none">
 
                             <a class="nav-link"
-                               href="${pageContext.request.contextPath}/profile">
+                               href="${profileUrl}">
 
                                 PROFILE
 
@@ -301,7 +304,7 @@
 
                                         <a
                                                 class="dropdown-item"
-                                                href="${pageContext.request.contextPath}/profile">
+                                                href="${profileUrl}">
 
                                             <i class="bi bi-person-circle me-2"></i>
                                             Profile

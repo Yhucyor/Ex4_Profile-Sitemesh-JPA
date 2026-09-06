@@ -5,304 +5,243 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <title>Quản lý danh mục</title>
-
-    <style>
-
-        .category-page {
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 10px;
-        }
-
-        .category-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .category-header h2 {
-            margin: 0;
-        }
-
-        .btn-add {
-            display: inline-block;
-            padding: 10px 16px;
-            background: #198754;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-        }
-
-        .btn-add:hover {
-            opacity: 0.9;
-        }
-
-        .category-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .category-table th,
-        .category-table td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .category-table th {
-            background: #f1f1f1;
-        }
-
-        .category-image {
-            width: 150px;
-            height: 100px;
-            object-fit: contain;
-            border-radius: 6px;
-        }
-
-        .status-active {
-            color: green;
-            font-weight: bold;
-        }
-
-        .status-locked {
-            color: red;
-            font-weight: bold;
-        }
-
-        .action-edit {
-            color: #0d6efd;
-            text-decoration: none;
-        }
-
-        .action-delete {
-            color: #dc3545;
-            text-decoration: none;
-        }
-
-        .action-edit:hover,
-        .action-delete:hover {
-            text-decoration: underline;
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 25px;
-            color: #777;
-        }
-
-    </style>
-
-</head>
-
-<body>
+<title>Quản lý danh mục</title>
 
 <div class="category-page">
 
-    <div class="category-header">
+    <div class="category-card">
 
-        <h2>
-            Quản lý danh mục
-        </h2>
+        <div class="category-card-header">
 
-        <a class="btn-add"
-           href="${pageContext.request.contextPath}/admin/category/add">
+            <div class="category-title-group">
 
-            + Add Category
+                <div class="category-title-icon">
+                    <i class="bi bi-tags-fill"></i>
+                </div>
 
-        </a>
+                <div>
+                    <h1 class="category-title">
+                        Quản lý danh mục
+                    </h1>
+
+                    <p class="category-subtitle">
+                        Quản lý, thêm, sửa, xóa các danh mục sản phẩm trong hệ thống.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="category-header-actions">
+
+                <div class="category-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                            type="text"
+                            id="categorySearch"
+                            placeholder="Tìm kiếm danh mục...">
+
+                </div>
+
+                <a class="btn-add-category"
+                   href="${pageContext.request.contextPath}/admin/category/add">
+
+                    <i class="bi bi-plus-lg"></i>
+                    <span>Add Category</span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <c:choose>
+
+            <c:when test="${empty listcate}">
+
+                <div class="category-empty">
+                    <i class="bi bi-inbox"></i>
+                    <p>Hiện chưa có danh mục nào.</p>
+                </div>
+
+            </c:when>
+
+            <c:otherwise>
+
+                <div class="category-table-wrapper">
+
+                    <table class="category-table"
+                           id="categoryTable"
+                           data-page-size="10">
+
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Images</th>
+                            <th>Category name</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <c:forEach
+                                items="${listcate}"
+                                var="cate"
+                                varStatus="STT">
+
+                            <tr>
+
+                                <td class="category-stt">
+                                        ${STT.index + 1}
+                                </td>
+
+                                <td class="category-image-cell">
+
+                                    <c:choose>
+
+                                        <c:when test="${empty cate.images}">
+
+                                            <div class="category-no-image">
+                                                <i class="bi bi-image"></i>
+                                                <span>Chưa có ảnh</span>
+                                            </div>
+
+                                        </c:when>
+
+                                        <c:when test="${fn:startsWith(cate.images, 'http://')
+                                                or fn:startsWith(cate.images, 'https://')}">
+
+                                            <div class="category-image-box">
+                                                <img
+                                                        src="${cate.images}"
+                                                        alt="${cate.categoryname}">
+                                            </div>
+
+                                        </c:when>
+
+                                        <c:otherwise>
+
+                                            <c:url
+                                                    value="/image"
+                                                    var="imageUrl">
+
+                                                <c:param
+                                                        name="fname"
+                                                        value="${cate.images}"/>
+
+                                            </c:url>
+
+                                            <div class="category-image-box">
+                                                <img
+                                                        src="${imageUrl}"
+                                                        alt="${cate.categoryname}">
+                                            </div>
+
+                                        </c:otherwise>
+
+                                    </c:choose>
+
+                                </td>
+
+                                <td class="category-name">
+                                        ${cate.categoryname}
+                                </td>
+
+                                <td>
+
+                                    <c:choose>
+
+                                        <c:when test="${cate.status == 1}">
+
+                                            <span class="status-badge status-active">
+                                                <span class="status-dot"></span>
+                                                Hoạt động
+                                            </span>
+
+                                        </c:when>
+
+                                        <c:otherwise>
+
+                                            <span class="status-badge status-inactive">
+                                                <span class="status-dot"></span>
+                                                Khóa
+                                            </span>
+
+                                        </c:otherwise>
+
+                                    </c:choose>
+
+                                </td>
+
+                                <td>
+
+                                    <c:url
+                                            value="/admin/category/edit"
+                                            var="editUrl">
+
+                                        <c:param
+                                                name="id"
+                                                value="${cate.categoryid}"/>
+
+                                    </c:url>
+
+                                    <div class="category-actions">
+
+                                        <a class="action-edit"
+                                           href="${editUrl}">
+                                            <i class="bi bi-pencil-square"></i>
+                                            <span>Sửa</span>
+                                        </a>
+
+                                        <span class="action-divider"></span>
+
+                                        <form action="${pageContext.request.contextPath}/admin/category/delete"
+                                              method="post"
+                                              class="delete-inline-form">
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="${cate.categoryid}">
+                                            <button type="submit"
+                                                    class="action-delete"
+                                                    onclick="return confirm('Bạn có chắc muốn xóa danh mục này?');">
+                                                <i class="bi bi-trash3"></i>
+                                                <span>Xóa</span>
+                                            </button>
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </c:forEach>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="table-footer">
+
+                    <div class="table-info"
+                         id="categoryTableInfo">
+                        Hiển thị danh mục
+                    </div>
+
+                    <div class="table-pagination"
+                         id="categoryPagination"></div>
+
+                </div>
+
+            </c:otherwise>
+
+        </c:choose>
 
     </div>
 
-
-    <c:if test="${empty listcate}">
-
-        <div class="no-data">
-            Hiện chưa có danh mục nào.
-        </div>
-
-    </c:if>
-
-
-    <c:if test="${not empty listcate}">
-
-        <table class="category-table">
-
-            <thead>
-
-            <tr>
-
-                <th>STT</th>
-                <th>Images</th>
-                <th>Category name</th>
-                <th>Status</th>
-                <th>Action</th>
-
-            </tr>
-
-            </thead>
-
-
-            <tbody>
-
-            <c:forEach
-                    items="${listcate}"
-                    var="cate"
-                    varStatus="STT">
-
-                <tr>
-
-                    <td>
-                            ${STT.index + 1}
-                    </td>
-
-
-                    <td>
-
-                        <c:choose>
-
-                            <%-- Không có ảnh --%>
-                            <c:when test="${empty cate.images}">
-
-                                <span>
-                                    Chưa có ảnh
-                                </span>
-
-                            </c:when>
-
-
-                            <%-- Ảnh URL / Cloudinary --%>
-                            <c:when test="${fn:startsWith(cate.images, 'http://')
-                                    or fn:startsWith(cate.images, 'https://')}">
-
-                                <img
-                                        src="${cate.images}"
-                                        class="category-image"
-                                        alt="${cate.categoryname}">
-
-                            </c:when>
-
-
-                            <%-- Ảnh local --%>
-                            <c:otherwise>
-
-                                <c:url
-                                        value="/image"
-                                        var="imageUrl">
-
-                                    <c:param
-                                            name="fname"
-                                            value="${cate.images}"/>
-
-                                </c:url>
-
-                                <img
-                                        src="${imageUrl}"
-                                        class="category-image"
-                                        alt="${cate.categoryname}">
-
-                            </c:otherwise>
-
-                        </c:choose>
-
-                    </td>
-
-
-                    <td>
-                            ${cate.categoryname}
-                    </td>
-
-
-                    <td>
-
-                        <c:choose>
-
-                            <c:when test="${cate.status == 1}">
-
-                                <span class="status-active">
-                                    Hoạt động
-                                </span>
-
-                            </c:when>
-
-                            <c:otherwise>
-
-                                <span class="status-locked">
-                                    Khóa
-                                </span>
-
-                            </c:otherwise>
-
-                        </c:choose>
-
-                    </td>
-
-
-                    <td>
-
-                        <c:url
-                                value="/admin/category/edit"
-                                var="editUrl">
-
-                            <c:param
-                                    name="id"
-                                    value="${cate.categoryid}"/>
-
-                        </c:url>
-
-                        <a
-                                class="action-edit"
-                                href="${editUrl}">
-
-                            Sửa
-
-                        </a>
-
-                        |
-
-                        <c:url
-                                value="/admin/category/delete"
-                                var="deleteUrl">
-
-                            <c:param
-                                    name="id"
-                                    value="${cate.categoryid}"/>
-
-                        </c:url>
-
-                        <a
-                                class="action-delete"
-                                href="${deleteUrl}"
-                                onclick="return confirm('Bạn có chắc muốn xóa danh mục này?');">
-
-                            Xóa
-
-                        </a>
-
-                    </td>
-
-                </tr>
-
-            </c:forEach>
-
-            </tbody>
-
-        </table>
-
-    </c:if>
-
 </div>
-
-</body>
-
-</html>

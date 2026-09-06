@@ -27,12 +27,14 @@
                                         or fn:startsWith(user.avatar, 'https://')}">
                                     <img src="${user.avatar}"
                                          alt="Avatar"
-                                         class="profile-avatar">
+                                         class="profile-avatar"
+                                         onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/frontend/images/avatar/default-avatar.png';">
                                 </c:when>
                                 <c:otherwise>
                                     <img src="${pageContext.request.contextPath}/image?fname=${user.avatar}"
                                          alt="Avatar"
-                                         class="profile-avatar">
+                                         class="profile-avatar"
+                                         onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/frontend/images/avatar/default-avatar.png';">
                                 </c:otherwise>
                             </c:choose>
 
@@ -120,7 +122,7 @@
 
                 <form
                         method="post"
-                        action="${pageContext.request.contextPath}/profile"
+                        action="${profileAction}"
                         enctype="multipart/form-data"
                         class="profile-form">
 
@@ -148,7 +150,8 @@
                                     type="text"
                                     name="fullname"
                                     value="${user.fullname}"
-                                    placeholder="Nhập họ tên đầy đủ">
+                                    placeholder="Nhập họ tên đầy đủ"
+                                    required>
                         </div>
 
                         <div class="profile-field">

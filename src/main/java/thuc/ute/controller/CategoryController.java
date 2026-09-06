@@ -77,26 +77,6 @@ public class CategoryController extends HttpServlet {
                     "/views/admin/category/category-edit.jsp"
             ).forward(req, resp);
 
-        } else if (url.contains("/admin/category/delete")) {
-
-            int id =
-                    Integer.parseInt(
-                            req.getParameter("id")
-                    );
-
-            try {
-
-                cateService.delete(id);
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-
-            resp.sendRedirect(
-                    req.getContextPath()
-                            + "/admin/categories"
-            );
         }
     }
 
@@ -115,7 +95,36 @@ public class CategoryController extends HttpServlet {
         } else if (url.contains("/admin/category/update")) {
 
             updateCategory(req, resp);
+
+        } else if (url.contains("/admin/category/delete")) {
+
+            deleteCategory(req, resp);
         }
+    }
+
+    private void deleteCategory(
+            HttpServletRequest req,
+            HttpServletResponse resp)
+            throws IOException {
+
+        int id =
+                Integer.parseInt(
+                        req.getParameter("id")
+                );
+
+        try {
+
+            cateService.delete(id);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        resp.sendRedirect(
+                req.getContextPath()
+                        + "/admin/categories"
+        );
     }
 
     private void insertCategory(

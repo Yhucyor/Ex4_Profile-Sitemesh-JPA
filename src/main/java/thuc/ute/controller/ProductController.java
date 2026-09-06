@@ -57,8 +57,6 @@ public class ProductController extends HttpServlet {
             showAddForm(req, resp);
         } else if (url.contains("/admin/product/edit")) {
             showEditForm(req, resp);
-        } else if (url.contains("/admin/product/delete")) {
-            deleteProduct(req, resp);
         }
     }
 
@@ -77,6 +75,8 @@ public class ProductController extends HttpServlet {
             insertProduct(req, resp);
         } else if (url.contains("/admin/product/update")) {
             updateProduct(req, resp);
+        } else if (url.contains("/admin/product/delete")) {
+            deleteProduct(req, resp);
         }
     }
 
@@ -88,7 +88,11 @@ public class ProductController extends HttpServlet {
         List<Product> products =
                 productService.findAll();
 
+        List<Category> categories =
+                categoryService.findAll();
+
         req.setAttribute("listProduct", products);
+        req.setAttribute("listCategory", categories);
 
         req.getRequestDispatcher(
                 "/views/admin/product/product-list.jsp"
