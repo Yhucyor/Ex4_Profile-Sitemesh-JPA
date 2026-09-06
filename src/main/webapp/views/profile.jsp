@@ -6,19 +6,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <title>Hồ sơ cá nhân</title>
-
-</head>
-
-
-<body>
+<title>Hồ sơ cá nhân</title>
 
 <section class="profile-page">
 
@@ -196,7 +184,3 @@
     </div>
 
 </section>
-
-</body>
-
-</html>

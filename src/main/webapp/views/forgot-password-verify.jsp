@@ -5,15 +5,7 @@
 <%@ taglib prefix="c"
            uri="jakarta.tags.core" %>
 
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Xác nhận OTP</title>
-</head>
-
-<body>
+<title>Xác nhận OTP</title>
 
 <section class="login-section auth-page">
 
@@ -84,7 +76,3 @@
     </div>
 
 </section>
-
-</body>
-
-</html>

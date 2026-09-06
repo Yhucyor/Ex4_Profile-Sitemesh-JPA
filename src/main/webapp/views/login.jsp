@@ -5,14 +5,7 @@
 <%@ taglib prefix="c"
            uri="jakarta.tags.core" %>
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Đăng nhập</title>
-</head>
-
-<body>
+<title>Đăng nhập</title>
 
 <section class="login-section">
 
@@ -104,6 +97,3 @@
     </div>
 
 </section>
-
-</body>
-</html>

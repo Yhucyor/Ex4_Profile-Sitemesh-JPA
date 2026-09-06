@@ -8,18 +8,7 @@
 
 <fmt:setLocale value="vi_VN" />
 
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <title>Trang chủ</title>
-
-</head>
-
-<body>
+<title>Trang chủ</title>
 
 <%-- =========================================
      HERO SLIDER
@@ -438,7 +427,3 @@
     </div>
 
 </section>
-
-</body>
-
-</html>

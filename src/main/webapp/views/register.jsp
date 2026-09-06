@@ -5,15 +5,7 @@
 <%@ taglib prefix="c"
            uri="jakarta.tags.core" %>
 
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Đăng ký tài khoản</title>
-</head>
-
-<body>
+<title>Đăng ký tài khoản</title>
 
 <section class="login-section register-section">
 
@@ -151,7 +143,3 @@
     </div>
 
 </section>
-
-</body>
-
-</html>
