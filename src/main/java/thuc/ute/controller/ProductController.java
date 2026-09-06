@@ -352,6 +352,11 @@ public class ProductController extends HttpServlet {
             return;
         }
 
+        if (fileName.startsWith("http://")
+                || fileName.startsWith("https://")) {
+            return;
+        }
+
         Path imagePath =
                 Paths.get(
                         getServletContext().getRealPath("/assets/uploads"),
