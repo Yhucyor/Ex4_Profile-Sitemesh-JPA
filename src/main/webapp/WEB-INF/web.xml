@@ -5,6 +5,16 @@
          version="6.0">
 
     <filter>
+        <filter-name>adminAuthFilter</filter-name>
+        <filter-class>thuc.ute.filter.AdminAuthFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>adminAuthFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>sitemesh</filter-name>
         <filter-class>org.sitemesh.config.ConfigurableSiteMeshFilter</filter-class>
     </filter>
@@ -12,10 +22,22 @@
     <filter-mapping>
         <filter-name>sitemesh</filter-name>
         <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error</location>
+    </error-page>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error</location>
+    </error-page>
 
 </web-app>

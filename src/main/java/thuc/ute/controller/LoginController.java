@@ -29,12 +29,20 @@ public class LoginController extends HttpServlet {
             HttpServletResponse resp)
             throws ServletException, IOException {
 
+        if ("true".equals(req.getParameter("adminRequired"))) {
+            req.setAttribute(
+                    "alert",
+                    "Vui lòng đăng nhập bằng tài khoản Admin"
+            );
+        }
+
         // 1. Kiểm tra nếu user đã đăng nhập rồi
         HttpSession session =
                 req.getSession(false);
 
         if (session != null
-                && session.getAttribute("account") != null) {
+                && session.getAttribute("account") != null
+                && req.getAttribute("alert") == null) {
 
             resp.sendRedirect(
                     req.getContextPath() + "/waiting"
